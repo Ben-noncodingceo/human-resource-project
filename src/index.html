@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>面试测评工具</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- 头部 -->
+        <header class="bg-primary text-white py-3 mb-4">
+            <div class="container">
+                <h1 class="text-center mb-0">面试测评工具</h1>
+                <p class="text-center mb-0">专业的职业能力评估系统</p>
+                <!-- 设置齿轮按钮 -->
+                <button id="settingsBtn" class="settings-button" title="岗位设置">
+                    <span class="material-symbols-outlined settings-icon">settings</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 主内容区 -->
+        <main class="container">
+            <!-- 欢迎页面 -->
+            <div id="welcomePage" class="page">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card shadow-lg">
+                            <div class="card-body text-center py-5">
+                                <h2 class="mb-4">欢迎来到面试测评系统</h2>
+                                <p class="lead mb-5">本系统将帮助您评估候选人的核心职业能力，包括智力、责任心、开放性、乐观态度和逻辑思维能力。</p>
+                                <button class="btn btn-primary btn-lg" onclick="showPositionFlow()">开始（先选择岗位）</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 岗位选择与测评调度页面 -->
+            <div id="positionFlowPage" class="page d-none">
+                <div class="row justify-content-center">
+                    <div class="col-md-10">
+                        <div class="card shadow">
+                            <div class="card-header bg-info text-white">
+                                <h4 class="mb-0">阶段一：选择岗位</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">选择目标岗位</label>
+                                    <select id="positionSelectFlow" class="form-select"></select>
+                                </div>
+                                <div class="mb-4" id="coreMetricsList">
+                                    <!-- 核心测评指标与顺序展示 -->
+                                </div>
+                                <div>
+                                    <button class="btn btn-primary" onclick="startCoreAssessmentForPosition()">开始核心测评</button>
+                                    <button class="btn btn-outline-secondary ms-2" onclick="showAssessmentSelection()">改为手动选择测评类型</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 可选指标选择页面 -->
+            <div id="optionalMetricsPage" class="page d-none">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card shadow">
+                            <div class="card-header bg-secondary text-white">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="mb-0">阶段二：选择可选指标（可跳过）</h4>
+                                    <button class="btn btn-outline-light btn-sm" onclick="navigateBack('optionalMetrics')">返回上一步</button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="optionalMetricsContainer" class="mb-3">
+                                    <!-- 可选指标复选框 -->
+                                </div>
+                                <div>
+                                    <button class="btn btn-primary" onclick="startOptionalAssessments()">开始可选测评</button>
+                                    <button class="btn btn-outline-secondary ms-2" onclick="skipOptionalAssessments()">跳过</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 测评选择页面 -->
+            <div id="assessmentSelection" class="page d-none">
+                <div class="row justify-content-center">
+                    <div class="col-md-10">
+                        <h2 class="text-center mb-5">选择测评类型</h2>
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="card assessment-card h-100" onclick="startAssessment('intelligence')">
+                                    <div class="card-body text-center">
+                                        <div class="assessment-icon">🧠</div>
+                                        <h4 class="card-title">智力测评</h4>
+                                        <p class="card-text">评估候选人的认知能力、学习能力和问题解决能力</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card assessment-card h-100" onclick="startAssessment('responsibility')">
+                                    <div class="card-body text-center">
+                                        <div class="assessment-icon">🎯</div>
+                                        <h4 class="card-title">责任心测评</h4>
+                                        <p class="card-text">评估候选人的责任感、可靠性和工作态度</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card assessment-card h-100" onclick="startAssessment('openness')">
+                                    <div class="card-body text-center">
+                                        <div class="assessment-icon">🌟</div>
+                                        <h4 class="card-title">开放性测评</h4>
+                                        <p class="card-text">评估候选人的创新思维、适应能力和学习意愿</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card assessment-card h-100" onclick="startAssessment('optimism')">
+                                    <div class="card-body text-center">
+                                        <div class="assessment-icon">😊</div>
+                                        <h4 class="card-title">乐观测评</h4>
+                                        <p class="card-text">评估候选人的积极态度、抗压能力和情绪稳定性</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card assessment-card h-100" onclick="startAssessment('logic')">
+                                    <div class="card-body text-center">
+                                        <div class="assessment-icon">🔍</div>
+                                        <h4 class="card-title">逻辑能力测评</h4>
+                                        <p class="card-text">评估候选人的逻辑思维、分析能力和推理能力</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 测评页面 -->
+            <div id="assessmentPage" class="page d-none">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card shadow">
+                            <div class="card-header bg-info text-white">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 id="assessmentTitle" class="mb-0"></h4>
+                                    <div class="timer">
+                                        <span id="timerDisplay">05:00</span>
+                                    </div>
+                                    <button class="btn btn-outline-light btn-sm" onclick="navigateBack('assessment')">返回上一步</button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="progress mb-4">
+                                    <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                                         role="progressbar" style="width: 0%"></div>
+                                </div>
+                                
+                                <div id="questionContainer">
+                                    <!-- 题目将在这里动态生成 -->
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button id="prevBtn" class="btn btn-secondary" onclick="previousQuestion()" disabled>上一题</button>
+                                    <button id="nextBtn" class="btn btn-primary" onclick="nextQuestion()">下一题</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 结果页面 -->
+            <div id="resultPage" class="page d-none">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card shadow">
+                            <div class="card-header bg-success text-white">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="mb-0">测评结果</h4>
+                                    <button class="btn btn-outline-light btn-sm" onclick="navigateBack('result')">返回上一步</button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="summaryTable" class="mb-4 d-none"></div>
+                                <div id="scoreDisplay" class="text-center mb-4">
+                                    <!-- 分数显示 -->
+                                </div>
+                                <!-- 核心能力雷达图 -->
+                                <div id="coreRadarSection" class="mb-4 d-none">
+                                    <h5 class="mb-2">核心考察能力雷达图</h5>
+                                    <p class="text-muted mb-2">展示岗位核心维度的测评得分，满分 100。图例标注各维度标签与颜色。</p>
+                                    <div class="radar-chart-wrapper">
+                                        <canvas id="coreRadarCanvas" aria-label="核心能力雷达图" role="img"></canvas>
+                                    </div>
+                                    <div id="coreRadarLegend" class="mt-2 small text-muted"></div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <h5>选择目标职位：</h5>
+                                    <select id="positionSelect" class="form-select" onchange="updateRecommendation()">
+                                        <option value="">请选择职位</option>
+                                        <option value="developer">软件开发工程师</option>
+                                        <option value="designer">UI/UX设计师</option>
+                                        <option value="manager">项目经理</option>
+                                        <option value="sales">销售代表</option>
+                                        <option value="analyst">数据分析师</option>
+                                        <option value="hr">人力资源专员</option>
+                                    </select>
+                                </div>
+                                
+                                <div id="recommendation" class="alert alert-info d-none">
+                                    <!-- 建议将在这里显示 -->
+                                </div>
+
+                                
+                                
+                                <div class="text-center">
+                                    <button class="btn btn-primary me-2" onclick="startNewAssessment()">开始新的测评</button>
+                                    <button class="btn btn-outline-secondary me-2" onclick="exportReportPDF()">导出PDF</button>
+                                    <button class="btn btn-outline-secondary me-2" onclick="exportReportWord()">导出Word</button>
+                                    <button class="btn btn-outline-secondary" onclick="exportReportExcel()">导出Excel</button>
+                                    <button class="btn btn-outline-primary ms-2" onclick="openEvaluationList()">查看评价记录</button>
+                                </div>
+                                <div class="card mt-3">
+                                    <div class="card-header">面试评价（0-10分）</div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label class="form-label">评分</label>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <input type="range" id="evaluationScore" min="0" max="10" step="1" class="form-range" oninput="updateEvalScoreDisplay(this.value)">
+                                                <span id="evaluationScoreDisplay" class="badge bg-primary">0</span>
+                                            </div>
+                                            <div class="form-text">拖动滑块选择0-10分，支持移动端与PC。</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">反馈意见（选填）</label>
+                                            <textarea id="evaluationFeedback" class="form-control" rows="5" placeholder="请填写详细评价意见...（自动保存草稿）" oninput="onEvaluationInput()"></textarea>
+                                            <div class="d-flex justify-content-end">
+                                                <small id="evaluationSaveHint" class="text-success d-none">草稿已保存</small>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-end">
+                                            <button class="btn btn-primary" onclick="saveEvaluation()">保存评价</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 评价记录列表页面（HR查看） -->
+            <div id="evaluationListPage" class="page d-none">
+                <div class="row justify-content-center">
+                    <div class="col-md-10">
+                        <div class="card shadow">
+                            <div class="card-header bg-dark text-white">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="mb-0">面试评价记录</h4>
+                                    <button class="btn btn-outline-light btn-sm" onclick="navigateBack('evaluationList')">返回上一步</button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="evaluationTableContainer"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="assessment.js"></script>
+    <!-- React & Babel -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Export libs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.2.1/docx.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <!-- Settings Modal React App -->
+    <div id="settings-root"></div>
+    <div id="recommendation-editor-root"></div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        function loadPositions() {
+            const stored = localStorage.getItem('positionsList');
+            if (stored) return JSON.parse(stored);
+            return [
+                { id: 'developer', name: '软件开发工程师', weight: 0.7 },
+                { id: 'designer', name: 'UI/UX设计师', weight: 0.6 },
+                { id: 'manager', name: '项目经理', weight: 0.8 },
+                { id: 'sales', name: '销售代表', weight: 0.5 },
+                { id: 'analyst', name: '数据分析师', weight: 0.7 },
+                { id: 'hr', name: '人力资源专员', weight: 0.6 },
+            ];
+        }
+
+        function syncSelectOptions(positions) {
+            const sel = document.getElementById('positionSelect');
+            if (!sel) return;
+            const selected = sel.value;
+            sel.innerHTML = '<option value="">请选择职位</option>' +
+                positions.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+            if (positions.some(p => p.id === selected)) sel.value = selected;
+        }
+
+        function SettingsModal({ open, onClose }) {
+            const [positions, setPositions] = useState(loadPositions());
+            const [newName, setNewName] = useState('');
+            const [newWeight, setNewWeight] = useState('0.6');
+            const [error, setError] = useState('');
+            const dragItem = useRef(null);
+
+            useEffect(() => {
+                localStorage.setItem('positionsList', JSON.stringify(positions));
+                syncSelectOptions(positions);
+            }, [positions]);
+
+            useEffect(() => {
+                syncSelectOptions(positions);
+            }, []);
+
+            const validate = (name, weight) => {
+                if (!name || name.trim().length < 2) return '岗位名称至少2个字符';
+                const w = Number(weight);
+                if (isNaN(w) || w < 0.1 || w > 1.0) return '权重系数需在0.1-1.0之间';
+                return '';
+            };
+
+            const addPosition = () => {
+                const msg = validate(newName, newWeight);
+                if (msg) { setError(msg); return; }
+                const id = newName.trim().toLowerCase().replace(/\s+/g, '-');
+                if (positions.some(p => p.id === id)) { setError('岗位已存在'); return; }
+                setPositions([...positions, { id, name: newName.trim(), weight: Number(newWeight) }]);
+                setNewName(''); setNewWeight('0.6'); setError('');
+            };
+
+            const updatePosition = (id, field, value) => {
+                setPositions(positions.map(p => p.id === id ? { ...p, [field]: field === 'weight' ? Number(value) : value } : p));
+            };
+
+            const deletePosition = (id) => {
+                setPositions(positions.filter(p => p.id !== id));
+            };
+
+            const onDragStart = (e, id) => { dragItem.current = id; };
+            const onDragOver = (e) => { e.preventDefault(); };
+            const onDrop = (e, targetId) => {
+                e.preventDefault();
+                const sourceId = dragItem.current;
+                if (!sourceId || sourceId === targetId) return;
+                const newOrder = [...positions];
+                const fromIdx = newOrder.findIndex(p => p.id === sourceId);
+                const toIdx = newOrder.findIndex(p => p.id === targetId);
+                const [moved] = newOrder.splice(fromIdx, 1);
+                newOrder.splice(toIdx, 0, moved);
+                setPositions(newOrder);
+                dragItem.current = null;
+            };
+
+            if (!open) return null;
+
+            return (
+                <div className="settings-overlay fade-in" onClick={onClose}>
+                    <div className="settings-modal slide-up" onClick={(e) => e.stopPropagation()}>
+                        <div className="d-flex justify-content-between align-items-center mb-3">
+                            <h5 className="mb-0">岗位列表设置</h5>
+                            <button className="btn btn-sm btn-outline-secondary" onClick={onClose}>关闭</button>
+                        </div>
+                        <div className="mb-3">
+                            <label className="form-label">新增岗位</label>
+                            <div className="row g-2">
+                                <div className="col-12 col-md-6">
+                                    <input className="form-control" placeholder="岗位名称" value={newName} onChange={e=>setNewName(e.target.value)} />
+                                </div>
+                                <div className="col-8 col-md-4">
+                                    <input className="form-control" placeholder="权重(0.1-1.0)" value={newWeight} onChange={e=>setNewWeight(e.target.value)} />
+                                </div>
+                                <div className="col-4 col-md-2 d-grid">
+                                    <button className="btn btn-primary" onClick={addPosition}>添加</button>
+                                </div>
+                            </div>
+                            {error && <div className="text-danger mt-2">{error}</div>}
+                        </div>
+                        <div>
+                            <div className="d-flex justify-content-between align-items-center">
+                                <span className="text-muted">拖拽以排序</span>
+                                <small className="text-muted">数据自动保存到本地</small>
+                            </div>
+                            <ul className="list-group mt-2">
+                                {positions.map(p => (
+                                    <li key={p.id}
+                                        className="list-group-item d-flex align-items-center position-item fade-in"
+                                        draggable
+                                        onDragStart={(e)=>onDragStart(e,p.id)}
+                                        onDragOver={onDragOver}
+                                        onDrop={(e)=>onDrop(e,p.id)}>
+                                        <span className="drag-handle material-symbols-outlined me-2">drag_indicator</span>
+                                        <input className="form-control me-2" value={p.name} onChange={(e)=>updatePosition(p.id,'name',e.target.value)} />
+                                        <input type="number" step="0.1" min="0.1" max="1.0" className="form-control me-2 weight-input" value={p.weight}
+                                            onChange={(e)=>updatePosition(p.id,'weight',e.target.value)} />
+                                        <button className="btn btn-outline-danger btn-sm" onClick={()=>deletePosition(p.id)}>删除</button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function SettingsApp() {
+            const [open, setOpen] = useState(false);
+            useEffect(() => {
+                const btn = document.getElementById('settingsBtn');
+                if (btn) btn.onclick = () => setOpen(true);
+            }, []);
+            return <SettingsModal open={open} onClose={()=>setOpen(false)} />
+        }
+
+        ReactDOM.createRoot(document.getElementById('settings-root')).render(<SettingsApp />);
+
+        // 导出功能桥接
+        window.exportReportPDF = function() {
+            const lastAssessment = JSON.parse(localStorage.getItem('lastAssessment'));
+            if (!lastAssessment) return alert('暂无可导出的测评结果');
+            const recEl = document.getElementById('recommendation');
+            const recText = recEl ? recEl.innerText : '';
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFontSize(12);
+            const lines = [
+                `面试测评报告`,
+                `测评类型: ${assessmentSystem.assessmentTypes[lastAssessment.type].name}`,
+                `测评分数: ${lastAssessment.score}分`,
+                `5分制评分: ${lastAssessment.stars}/5星`,
+                `测评时间: ${new Date(lastAssessment.timestamp).toLocaleString()}`,
+                '',
+                '建议内容：',
+                recText
+            ];
+            let y = 10;
+            lines.forEach(line => {
+                const split = doc.splitTextToSize(line, 180);
+                doc.text(split, 10, y);
+                y += split.length * 6 + 2;
+            });
+            doc.save('面试测评报告.pdf');
+        }
+
+        window.exportReportWord = async function() {
+            const lastAssessment = JSON.parse(localStorage.getItem('lastAssessment'));
+            if (!lastAssessment) return alert('暂无可导出的测评结果');
+            const recEl = document.getElementById('recommendation');
+            const recText = recEl ? recEl.innerText : '';
+            const { Document, Packer, Paragraph, TextRun } = window.docx;
+            const doc = new Document({
+                sections: [{
+                    properties: {},
+                    children: [
+                        new Paragraph({ children: [new TextRun({ text: '面试测评报告', bold: true, size: 28 })] }),
+                        new Paragraph(`测评类型: ${assessmentSystem.assessmentTypes[lastAssessment.type].name}`),
+                        new Paragraph(`测评分数: ${lastAssessment.score}分`),
+                        new Paragraph(`5分制评分: ${lastAssessment.stars}/5星`),
+                        new Paragraph(`测评时间: ${new Date(lastAssessment.timestamp).toLocaleString()}`),
+                        new Paragraph(''),
+                        new Paragraph({ children: [new TextRun({ text: '建议内容：', bold: true })] }),
+                        ...recText.split('\n').map(t => new Paragraph(t)),
+                    ]
+                }]
+            });
+            const blob = await Packer.toBlob(doc);
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '面试测评报告.docx';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 导出Excel
+        window.exportReportExcel = function() {
+            const lastAssessment = JSON.parse(localStorage.getItem('lastAssessment'));
+            if (!lastAssessment) return alert('暂无可导出的测评结果');
+            const answers = JSON.parse(localStorage.getItem('lastAssessmentAnswers') || '[]');
+            const recEl = document.getElementById('recommendation');
+            const recText = recEl ? recEl.innerText : '';
+
+            const wb = XLSX.utils.book_new();
+            const assessName = assessmentSystem.assessmentTypes[lastAssessment.type].name;
+            // Fields sheet (first)
+            const fields = [
+                ['Sheet', 'Field', 'Description'],
+                ['Summary', '测评类型', '当前测评的类型名称'],
+                ['Summary', '测评分数', '百分制分数(0-100)'],
+                ['Summary', '5分制评分', '星级评分(1-5星)'],
+                ['Summary', '测评时间', '生成报告的时间戳(本地时区展示)'],
+                ['Summary', '职位', '当前选择的目标职位'],
+                ['Answers', '序号', '答题序号(1开始)'],
+                ['Answers', '题目', '抽样题库中的题目文本'],
+                ['Answers', '选择索引', '所选选项的索引(0开始)'],
+                ['Answers', '选择内容', '所选的选项文本'],
+                ['Recommendation', '行号', '建议文本的行号(1开始)'],
+                ['Recommendation', '内容', '建议的文本内容'],
+                ['Questions', 'Type', '测评类型ID'],
+                ['Questions', 'QuestionID', '题目ID'],
+                ['Questions', 'QuestionText', '题目文本'],
+                ['Questions', 'Option1..N', '所有选项文本(按原始顺序展开)'],
+                ['Questions', 'Difficulty', '题目难度(1-3，主观题可能为空)'],
+                ['Questions', 'CorrectIndex', '客观题正确答案索引(主观题为空)'],
+                ['Questions', 'Scoring', '主观题评分数组(客观题为空)']
+            ];
+            const wsFields = XLSX.utils.aoa_to_sheet(fields);
+            XLSX.utils.book_append_sheet(wb, wsFields, 'Fields');
+            // Summary sheet
+            const summaryData = [
+                ['测评类型', assessName],
+                ['测评分数', lastAssessment.score],
+                ['5分制评分', `${lastAssessment.stars}/5星`],
+                ['测评时间', new Date(lastAssessment.timestamp).toLocaleString()],
+                ['职位', document.getElementById('positionSelect').value || '未选择']
+            ];
+            const wsSummary = XLSX.utils.aoa_to_sheet(summaryData);
+            XLSX.utils.book_append_sheet(wb, wsSummary, 'Summary');
+
+            // Answers sheet
+            const answersData = [["序号","题目","选择索引","选择内容"]].concat(
+                answers.map((a, i) => [i + 1, a.question, a.selectedIndex ?? '', a.selectedText ?? ''])
+            );
+            const wsAnswers = XLSX.utils.aoa_to_sheet(answersData);
+            XLSX.utils.book_append_sheet(wb, wsAnswers, 'Answers');
+
+            // Recommendation sheet
+            const recLines = recText.split('\n').map((l, i) => [i + 1, l]);
+            const wsRec = XLSX.utils.aoa_to_sheet([["行号","内容"], ...recLines]);
+            XLSX.utils.book_append_sheet(wb, wsRec, 'Recommendation');
+
+            // Questions sheet (full dataset for current assessment type)
+            const fullQ = assessmentSystem.assessmentTypes[lastAssessment.type].questions;
+            const maxOptions = Math.max(...fullQ.map(q => (q.options ? q.options.length : 0)));
+            const header = ['Type', 'QuestionID', 'QuestionText']
+                .concat(Array.from({ length: maxOptions }, (_, i) => `Option${i + 1}`))
+                .concat(['Difficulty', 'CorrectIndex', 'Scoring']);
+            const rows = fullQ.map(q => {
+                const opts = Array.from({ length: maxOptions }, (_, i) => (q.options?.[i] ?? ''));
+                return [
+                    lastAssessment.type,
+                    q.id || '',
+                    q.question || '',
+                    ...opts,
+                    (q.difficulty ?? ''),
+                    (typeof q.correct === 'number' ? q.correct : ''),
+                    (Array.isArray(q.scoring) ? JSON.stringify(q.scoring) : '')
+                ];
+            });
+            const wsQuestions = XLSX.utils.aoa_to_sheet([header, ...rows]);
+            XLSX.utils.book_append_sheet(wb, wsQuestions, 'Questions');
+
+            XLSX.writeFile(wb, '面试测评报告.xlsx');
+        }
+
+        // 建议内容编辑器（HR后台）
+        function RecommendationEditorModal() {
+            const [open, setOpen] = useState(false);
+            const [content, setContent] = useState('');
+            const [position, setPosition] = useState('');
+            const backdropRef = useRef(null);
+
+            useEffect(() => {
+                window.openRecommendationEditor = () => {
+                    const pos = document.getElementById('positionSelect').value;
+                    if (!pos) return alert('请先选择职位');
+                    setPosition(pos);
+                    // 尝试加载覆盖内容，否则从当前页面建议中抓取
+                    try {
+                        const overrides = JSON.parse(localStorage.getItem('recommendationOverrides') || '{}');
+                        if (overrides && overrides[pos]) {
+                            setContent(overrides[pos]);
+                        } else {
+                            const recEl = document.querySelector('#recommendation .recommendation-text');
+                            setContent(recEl ? recEl.innerHTML : '');
+                        }
+                    } catch (e) {}
+                    setOpen(true);
+                };
+            }, []);
+
+            const save = () => {
+                try {
+                    const overrides = JSON.parse(localStorage.getItem('recommendationOverrides') || '{}');
+                    overrides[position] = content;
+                    localStorage.setItem('recommendationOverrides', JSON.stringify(overrides));
+                    setOpen(false);
+                    // 刷新展示
+                    updateRecommendation();
+                } catch (e) {
+                    alert('保存失败，请重试');
+                }
+            };
+
+            const close = () => setOpen(false);
+
+            if (!open) return null;
+
+            return (
+                <div className="modal-backdrop-custom" ref={backdropRef}>
+                    <div className="modal-dialog modal-dialog-centered">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">编辑职位建议</h5>
+                                <button type="button" className="btn-close" onClick={close}></button>
+                            </div>
+                            <div className="modal-body">
+                                <div className="mb-3">
+                                    <label className="form-label">职位</label>
+                                    <input className="form-control" value={position} readOnly />
+                                </div>
+                                <div className="mb-3">
+                                    <label className="form-label">建议内容（支持HTML）</label>
+                                    <textarea className="form-control" style={{minHeight:'220px'}} value={content} onChange={e=>setContent(e.target.value)}></textarea>
+                                    <div className="form-text">保存后将覆盖该职位的默认建议模板。</div>
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button className="btn btn-secondary" onClick={close}>取消</button>
+                                <button className="btn btn-primary" onClick={save}>保存</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('recommendation-editor-root')).render(<RecommendationEditorModal />);
+
+        // 岗位流程初始化与同步
+        function renderCoreMetrics(positionId) {
+            const container = document.getElementById('coreMetricsList');
+            if (!positionId) { container.innerHTML = '<div class="text-muted">请选择岗位</div>'; return; }
+            const mapping = window.positionMetricsMap?.[positionId];
+            if (!mapping) { container.innerHTML = '<div class="text-danger">未找到该岗位的核心测评配置</div>'; return; }
+            const names = mapping.core.map(t => assessmentSystem.assessmentTypes[t]?.name || t);
+            container.innerHTML = `
+                <h5>核心测评（按顺序）：</h5>
+                <ol class="mb-3">${names.map(n=>`<li>${n}</li>`).join('')}</ol>
+                <small class="text-muted">完成后可选择是否进行可选指标测评</small>
+            `;
+        }
+
+        window.showPositionFlow = function() {
+            document.getElementById('welcomePage').classList.add('d-none');
+            document.getElementById('positionFlowPage').classList.remove('d-none');
+            const sel = document.getElementById('positionSelectFlow');
+            const stored = localStorage.getItem('positionsList');
+            const positions = stored ? JSON.parse(stored) : [
+                { id: 'developer', name: '软件开发工程师' },
+                { id: 'designer', name: 'UI/UX设计师' },
+                { id: 'manager', name: '项目经理' },
+                { id: 'sales', name: '销售代表' },
+                { id: 'analyst', name: '数据分析师' },
+                { id: 'hr', name: '人力资源专员' },
+            ];
+            sel.innerHTML = '<option value="">请选择职位</option>' + positions.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+            sel.onchange = () => renderCoreMetrics(sel.value);
+            renderCoreMetrics(sel.value);
+        }
+
+        window.startCoreAssessmentForPosition = function() {
+            const pos = document.getElementById('positionSelectFlow').value;
+            if (!pos) return alert('请先选择岗位');
+            assessmentSystem.startPositionCoreFlow(pos);
+        }
+
+        window.startOptionalAssessments = function() {
+            const checks = document.querySelectorAll('#optionalMetricsContainer input[type=checkbox]:checked');
+            const types = Array.from(checks).map(c=>c.value);
+            assessmentSystem.startOptionalFlow(types);
+        }
+
+        window.skipOptionalAssessments = function() {
+            assessmentSystem.finishSessionAndShowSummary();
+        }
+
+        // —— 页面返回与确认 ——
+        window.navigateBack = function(from) {
+            const confirmLeave = () => window.confirm('返回将重置当前阶段的选择或数据，是否继续？');
+            switch (from) {
+                case 'positionFlow':
+                    if (!confirmLeave()) return;
+                    document.getElementById('positionFlowPage').classList.add('d-none');
+                    document.getElementById('welcomePage').classList.remove('d-none');
+                    break;
+                case 'optionalMetrics':
+                    if (!confirmLeave()) return;
+                    document.getElementById('optionalMetricsPage').classList.add('d-none');
+                    document.getElementById('positionFlowPage').classList.remove('d-none');
+                    break;
+                case 'assessment':
+                    const hasProgress = (assessmentSystem?.currentQuestionIndex || 0) > 0 || (assessmentSystem?.answers?.length || 0) > 0;
+                    if (hasProgress) {
+                        if (!window.confirm('当前测评尚未完成，返回将丢失未保存的答题进度，是否继续？')) return;
+                    } else {
+                        if (!confirmLeave()) return;
+                    }
+                    document.getElementById('assessmentPage').classList.add('d-none');
+                    document.getElementById('positionFlowPage').classList.remove('d-none');
+                    break;
+                case 'result':
+                    if (!confirmLeave()) return;
+                    document.getElementById('resultPage').classList.add('d-none');
+                    document.getElementById('welcomePage').classList.remove('d-none');
+                    break;
+                case 'evaluationList':
+                    document.getElementById('evaluationListPage').classList.add('d-none');
+                    document.getElementById('resultPage').classList.remove('d-none');
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // —— 面试评价模块 ——
+        window.updateEvalScoreDisplay = function(val) {
+            const el = document.getElementById('evaluationScoreDisplay');
+            if (el) el.textContent = String(val);
+        }
+
+        let _evalSaveTimer = null;
+        window.onEvaluationInput = function() {
+            const textEl = document.getElementById('evaluationFeedback');
+            // 自动保存草稿（500ms防抖）
+            clearTimeout(_evalSaveTimer);
+            _evalSaveTimer = setTimeout(() => {
+                try {
+                    const id = localStorage.getItem('currentInterviewId') || 'unknown';
+                    const draft = {
+                        score: Number(document.getElementById('evaluationScore')?.value || 0),
+                        feedback: textEl.value || '',
+                        timestamp: Date.now()
+                    };
+                    localStorage.setItem(`evaluationDraft_${id}`, JSON.stringify(draft));
+                    const hint = document.getElementById('evaluationSaveHint');
+                    if (hint) { hint.classList.remove('d-none'); setTimeout(()=>hint.classList.add('d-none'), 1500); }
+                } catch (e) {}
+            }, 500);
+        }
+
+        window.initEvaluationModule = function() {
+            try {
+                const id = localStorage.getItem('currentInterviewId') || '';
+                const draftRaw = id ? localStorage.getItem(`evaluationDraft_${id}`) : null;
+                const draft = draftRaw ? JSON.parse(draftRaw) : null;
+                if (draft) {
+                    const scoreEl = document.getElementById('evaluationScore');
+                    const textEl = document.getElementById('evaluationFeedback');
+                    if (scoreEl && typeof draft.score === 'number') { scoreEl.value = draft.score; updateEvalScoreDisplay(draft.score); }
+                    if (textEl && typeof draft.feedback === 'string') { textEl.value = draft.feedback; }
+                } else {
+                    updateEvalScoreDisplay(0);
+                }
+            } catch (e) {}
+        }
+
+        window.saveEvaluation = function() {
+            try {
+                const id = localStorage.getItem('currentInterviewId') || `${Date.now()}`;
+                const score = Number(document.getElementById('evaluationScore')?.value || 0);
+                const rawFeedback = document.getElementById('evaluationFeedback')?.value || '';
+                const feedback = rawFeedback.trim() === '' ? null : rawFeedback;
+                const last = JSON.parse(localStorage.getItem('lastAssessment') || '{}');
+                const position = document.getElementById('positionSelect')?.value || (assessmentSystem?.currentPosition || '');
+                const record = {
+                    id,
+                    position,
+                    assessmentType: last.type || '',
+                    assessmentScore: last.score || 0,
+                    assessmentStars: last.stars || 0,
+                    hrScore: score,
+                    feedback,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem(`interviewEvaluation_${id}`, JSON.stringify(record));
+                alert('评价已保存');
+            } catch (e) {
+                alert('保存失败，请重试');
+            }
+        }
+
+        window.openEvaluationList = function() {
+            renderEvaluationList();
+            document.getElementById('resultPage').classList.add('d-none');
+            document.getElementById('evaluationListPage').classList.remove('d-none');
+        }
+
+        window.renderEvaluationList = function() {
+            const container = document.getElementById('evaluationTableContainer');
+            if (!container) return;
+            const keys = Object.keys(localStorage).filter(k => k.startsWith('interviewEvaluation_'));
+            const records = keys.map(k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }).filter(Boolean);
+            if (records.length === 0) { container.innerHTML = '<div class="text-muted">暂无评价记录</div>'; return; }
+            const rows = records.map((r, i) => `
+                <tr>
+                    <td>${i+1}</td>
+                    <td>${r.id}</td>
+                    <td>${r.position || ''}</td>
+                    <td>${r.assessmentType || ''}</td>
+                    <td>${r.assessmentScore || 0}</td>
+                    <td>${r.hrScore || 0}</td>
+                    <td>${new Date(r.timestamp).toLocaleString()}</td>
+                </tr>
+            `).join('');
+            container.innerHTML = `
+                <table class="table table-striped">
+                    <thead><tr><th>#</th><th>ID</th><th>岗位</th><th>测评类型</th><th>测评分数</th><th>HR评分</th><th>时间</th></tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            `;
+        }
+
+        // —— 注意：为避免 Babel 运行时冲突，雷达图与开放反馈逻辑将在下方独立脚本中提供 ——
+    </script>
+    <!-- 独立脚本：雷达图与开放反馈（不经 Babel 编译） -->
+    <script>
+        // 雷达图
+        if (!window.renderCoreRadarChart) {
+            (function(){
+                let radarChartInstance = null;
+                const palette = ['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b'];
+                function buildLegend(labels) {
+                    const colors = labels.map((_, i) => palette[i % palette.length]);
+                    return labels.map((lab, i) => `<span class="badge me-2" style="background-color:${colors[i]};">${lab}</span>`).join('');
+                }
+                function render(labels, scores) {
+                    const section = document.getElementById('coreRadarSection');
+                    const canvas = document.getElementById('coreRadarCanvas');
+                    const legend = document.getElementById('coreRadarLegend');
+                    if (!section || !canvas) return;
+                    section.classList.remove('d-none');
+                    if (legend) legend.innerHTML = buildLegend(labels);
+                    const data = {
+                        labels,
+                        datasets: [{
+                            label: '本次核心维度得分',
+                            data: scores,
+                            fill: true,
+                            backgroundColor: 'rgba(31, 119, 180, 0.2)',
+                            borderColor: '#1f77b4',
+                            pointBackgroundColor: labels.map((_, i) => palette[i % palette.length]),
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: labels.map((_, i) => palette[i % palette.length])
+                        }]
+                    };
+                    const options = {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                min: 0,
+                                max: 100,
+                                ticks: { stepSize: 20, showLabelBackdrop: false },
+                                grid: { color: 'rgba(0,0,0,0.1)' },
+                                angleLines: { color: 'rgba(0,0,0,0.1)' }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: true },
+                            title: { display: true, text: '核心考察能力' }
+                        }
+                    };
+                    if (radarChartInstance) { radarChartInstance.destroy(); }
+                    radarChartInstance = new Chart(canvas, { type: 'radar', data, options });
+                }
+                window.renderCoreRadarChart = function() {
+                    try {
+                        const pos = window.assessmentSystem?.currentPosition;
+                        const mapping = window.positionMetricsMap?.[pos];
+                        const types = mapping?.core || [];
+                        const labels = types.map(t => window.assessmentSystem?.assessmentTypes?.[t]?.name || t);
+                        const scores = types.map(t => {
+                            const found = (window.assessmentSystem?.sessionResults || []).find(r => r.type === t);
+                            return found ? Math.max(0, Math.min(100, found.score)) : 0;
+                        });
+                        if (labels.length) render(labels, scores);
+                    } catch (e) { console.error('雷达图渲染失败', e); }
+                }
+            })();
+        }
+
+        
+    </script>
+  </body>
+</html>

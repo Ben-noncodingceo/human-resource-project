@@ -76,6 +76,15 @@ npm run build-mac   # macOS
 - 查看分数与岗位建议、核心能力雷达图
 - 填写 HR 面试评价（评分必填；反馈意见选填），保存或导出报告
 
+## 截图预览
+
+> 如图片未显示，请在 `docs/screenshots/` 目录补充实际截图文件。
+
+- 欢迎页与岗位选择（`docs/screenshots/overview.png`）
+- 核心测评进行中（`docs/screenshots/assessment.png`）
+- 结果页与雷达图（`docs/screenshots/result_radar.png`）
+- HR 面试评价（`docs/screenshots/interview_evaluation.png`）
+
 ## 最低运行要求
 
 - 浏览器：现代浏览器（Chrome / Edge / Safari 最新版）
